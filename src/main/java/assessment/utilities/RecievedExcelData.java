@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,19 +74,49 @@ public class RecievedExcelData {
 		}
 
 		// First Problem
+		System.out.println("first Problem Solution");
 		meanEffortSpentByVariousTeamsOnDifferentProjects(allRecords);
 
-		//
+		System.out.println("*---------------*-------------*");
+		System.out.println("Second Problem Solution");
+		// Second Problem
 		fiveEmployeesWithTheLowestEfficiency(allRecords);
 	}
 
+	
+	
 	private static void fiveEmployeesWithTheLowestEfficiency(List<Data> allRecords) {
 		
+		List<EfficiencyPair> records = new ArrayList<>();
 		Map<String,Double> effi = new TreeMap<>();
+		
 		
 		for(Data x : allRecords)
 		{
+			if(effi.containsKey(x.getOwner()))
+			{
+				effi.put(x.getOwner(),effi.get(x.getOwner())+x.getHours());
+			}
+			else
+			{
+				effi.put(x.getOwner(),x.getHours());
+			}	
+		}
+		
+	
+		for (Map.Entry<String,Double> entry : effi.entrySet()) {
 			
+			EfficiencyPair t = new EfficiencyPair(entry.getValue(),entry.getKey());
+			records.add(t);
+			 //System.out.println(entry.getKey() + " : " + entry.getValue());
+		
+		}
+		
+		Collections.sort(records, new EfficiencyPair());
+		
+		for(int i=0; i<5; i++)
+		{
+			System.out.println(records.get(i));
 		}
 		
 	}
