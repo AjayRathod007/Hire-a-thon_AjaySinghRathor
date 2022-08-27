@@ -20,61 +20,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class RecievedExcelData {
+public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-		List<Data> allRecords = new ArrayList<>();
-
-		try {
-			File file = new File("C:\\Users\\DELL\\Downloads\\Hackathon _Timesheet.xlsx"); // creating a new file
-																							// instance
-			FileInputStream fis = new FileInputStream(file); // obtaining bytes from the file
-			// creating Workbook instance that refers to .xlsx file
-			XSSFWorkbook wb = new XSSFWorkbook(fis);
-			XSSFSheet sheet = wb.getSheetAt(0); // creating a Sheet object to retrieve object
-			Iterator<Row> itr = sheet.iterator(); // iterating over excel file
-
-			Row row = itr.next();
-
-			while (itr.hasNext()) {
-				row = itr.next();
-
-				List<Object> rowData = new ArrayList<>();
-
-				Iterator<Cell> cellIterator = row.cellIterator(); // iterating over each column
-
-				while (cellIterator.hasNext()) {
-
-					Cell cell = cellIterator.next();
-					switch (cell.getCellType()) {
-					case STRING:
-						// System.out.print(cell.getStringCellValue() + "\t\t\t");
-						rowData.add(cell.getStringCellValue());
-						break;
-					case NUMERIC:
-						// System.out.print(cell.getNumericCellValue() + "\t\t\t");
-						rowData.add(cell.getNumericCellValue());
-						break;
-					default:
-					}
-				}
-
-				if (rowData.size() > 0) {
-					Data d = new Data(rowData.get(0), rowData.get(1), rowData.get(2), rowData.get(3), rowData.get(4),
-							rowData.get(5));
-					allRecords.add(d);
-					System.out.println(d);
-					rowData.clear();
-				}
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Data> allRecords = ReceiveExcelData.receiveExcelData();
 
 		// First Problem
 		System.out.println("first Problem Solution");
+		System.out.println("*---------------*-------------*");
 		meanEffortSpentByVariousTeamsOnDifferentProjects(allRecords);
 
 		System.out.println("*---------------*-------------*");
@@ -83,42 +37,33 @@ public class RecievedExcelData {
 		fiveEmployeesWithTheLowestEfficiency(allRecords);
 	}
 
-	
-	
 	private static void fiveEmployeesWithTheLowestEfficiency(List<Data> allRecords) {
-		
+
 		List<EfficiencyPair> records = new ArrayList<>();
-		Map<String,Double> effi = new TreeMap<>();
-		
-		
-		for(Data x : allRecords)
-		{
-			if(effi.containsKey(x.getOwner()))
-			{
-				effi.put(x.getOwner(),effi.get(x.getOwner())+x.getHours());
+		Map<String, Double> effi = new TreeMap<>();
+
+		for (Data x : allRecords) {
+			if (effi.containsKey(x.getOwner())) {
+				effi.put(x.getOwner(), effi.get(x.getOwner()) + x.getHours());
+			} else {
+				effi.put(x.getOwner(), x.getHours());
 			}
-			else
-			{
-				effi.put(x.getOwner(),x.getHours());
-			}	
 		}
-		
-	
-		for (Map.Entry<String,Double> entry : effi.entrySet()) {
-			
-			EfficiencyPair t = new EfficiencyPair(entry.getValue(),entry.getKey());
+
+		for (Map.Entry<String, Double> entry : effi.entrySet()) {
+
+			EfficiencyPair t = new EfficiencyPair(entry.getValue(), entry.getKey());
 			records.add(t);
-			 //System.out.println(entry.getKey() + " : " + entry.getValue());
-		
+			// System.out.println(entry.getKey() + " : " + entry.getValue());
+
 		}
-		
+
 		Collections.sort(records, new EfficiencyPair());
-		
-		for(int i=0; i<5; i++)
-		{
+
+		for (int i = 0; i < 5; i++) {
 			System.out.println(records.get(i));
 		}
-		
+
 	}
 
 	private static void meanEffortSpentByVariousTeamsOnDifferentProjects(List<Data> allRecords) {
