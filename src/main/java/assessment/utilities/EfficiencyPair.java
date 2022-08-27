@@ -39,10 +39,12 @@ public class EfficiencyPair implements Comparator<EfficiencyPair> {
 	@Override
 	public int compare(EfficiencyPair o1, EfficiencyPair o2) {
 
-       if(o1.getHours() > o2.getHours())
-	    	return 1;
-       
-       return 0; 
+//       if(o1.getHours() > o2.getHours())
+//	    	return 1;
+//       
+//       return 0; 
+		
+		return (int)(o1.getHours() - o2.getHours());
 	}
 
 	
